@@ -1,0 +1,73 @@
+TASK 1
+-------
+
+data = Load 'employee_details.txt' using PigStorage(',') as ( id:int, name:chararray, salary: int, rating :int);
+
+ordered = order data by rating desc, name ;
+
+final = LIMIT ordered 5;
+
+dump final;
+
+
+
+TASK 2
+-------
+
+data = load 'employee_details.txt' using PigStorage (',')as ( id:int, name:chararray, salary: int, rating :int);
+ordered_data = order data by salary desc , name ;
+
+select_data = filter ordered_data by id%2==1;
+
+final = foreach select_data generate (id, name);
+
+final1 = limit final 3;
+
+dump final1;
+
+
+
+TASK 3
+-------
+emp = Load 'employee_details.txt' using PigStorage(',') as ( id:int, name:chararray, salary: int, rating :int);
+
+exp = Load 'employee_expenses.txt' using PigStorage('\t') as ( id:int, expenses:int);
+
+joinedata = join emp by id, exp by id;
+
+sortdata = order joinedata by expenses desc, name asc;
+
+final = foreach sortdata generate (emp::id, name);
+
+dump final;
+
+
+TASK 4
+------
+emp = load 'employee_details.txt' using PigStorage (',') as (id:int, name:chararray, salaray:int, rating:int);
+
+exp = load 'employee_expenses.txt' using PigStorage ('\t') as (id:int, expenses:int);
+
+joindata = join emp by id, exp by id;
+
+B = foreach joindata generate (emp::id , name);
+
+
+D = distinct B;
+
+dump D;
+
+
+TASK 5
+-------
+emp = load 'employee_details.txt' using PigStorage (',') as (id:int, name:chararray, salaray:int, rating:int);
+
+exp = load 'employee_expenses.txt' using PigStorage ('\t') as (id:int, expenses:int);
+
+joindata = join emp by id left outer, exp by id;
+
+B = filter joindata by exp::expenses is null;
+
+C = foreach B generate (emp::id , name);
+
+dump C;
